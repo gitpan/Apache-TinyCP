@@ -1,7 +1,7 @@
 package Apache::TinyCP;
 use warnings;
 use strict;
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 use Apache::Constants qw(:common :response);
 
@@ -251,12 +251,12 @@ sub get_content_type { 'text/html' }
 #
 # erm, you could override this. i'll leave it outta the docs for now
 #
-sub handler {
-    my ($r) = @_;
+sub handler ($$) {
+    my ($self, $r) = @_;
 
     # lookup what file we're looking for, return declined
     # if we can't find the page, or forbidden if not -r
-    my $filename = __PACKAGE__->get_filename($r)
+    my $filename = $self->get_filename($r)
         or return SERVER_ERROR;
 
     unless ( -e $filename ) {
@@ -276,12 +276,12 @@ sub handler {
     }
 
     # get the formatted content
-    my $content = __PACKAGE__->get_content($filename, $r)
+    my $content = $self->get_content($filename, $r)
         or return SERVER_ERROR;
 
     # print the formatted content
-    $r->send_http_header(__PACKAGE__->get_content_type);
-    return __PACKAGE__->print_content($content, $r) ? OK : SERVER_ERROR;
+    $r->send_http_header($self->get_content_type);
+    return $self->print_content($content, $r) ? OK : SERVER_ERROR;
 }
 
 =back

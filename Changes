@@ -1,7 +1,7 @@
---- #YAML:1.0
-#
-# Changes for Apache::TinyCP
-#
+- version: 0.03
+  date:    Sun Jun 27 16:42:20 EDT 2004
+  changes:
+    - made it actually subclassable
 
 - version: 0.02
   date:    Wed Jun  2 00:51:14 EDT 2004

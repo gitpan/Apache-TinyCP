@@ -1,10 +1,10 @@
 Changes
 MANIFEST
 MANIFEST.SKIP
-META.yml			Module meta-data (added by MakeMaker)
 Makefile.PL
 README
 examples/content/HomePage
 examples/templates/layout
 lib/Apache/TinyCP.pm
 t/all.t
+META.yml                                 Module meta-data (added by MakeMaker)
