@@ -1,0 +1,15 @@
+--- #YAML:1.0
+#
+# Changes for Apache::TinyCP
+#
+
+- version: 0.02
+  date:    Wed Jun  2 00:51:14 EDT 2004
+  changes:
+    - fixed title and documentation
+    - added examples
+
+- version: 0.01
+  date:    Tue Jun  1 19:48:46 EDT 2004
+  changes:
+    - initial public release
