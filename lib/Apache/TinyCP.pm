@@ -1,7 +1,7 @@
 package Apache::TinyCP;
 use warnings;
 use strict;
-our $VERSION = 0.03;
+our $VERSION = "1.00";
 
 use Apache::Constants qw(:common :response);
 
@@ -12,7 +12,7 @@ use POSIX qw(strftime);
 
 =head1 NAME
 
-Apache::TinyCP - put up content really quickly
+Apache::TinyCP - a tiny content provider to put up content really quickly
 
 =head1 SYNOPSIS
 
@@ -76,8 +76,8 @@ Say you wanted to write your pages in POD instead of Kwikish text. You would cre
     <Perl>
         use Pod::Simple::HTML ();
         
-        package Local::TinyCMS;
-        use base qw( Apache::TinyCMS );
+        package Local::TinyCP;
+        use base qw( Apache::TinyCP );
         
         sub format_content {
             my ( $self, $data, $r ) = @_;
@@ -93,7 +93,7 @@ Say you wanted to write your pages in POD instead of Kwikish text. You would cre
     
     <Location />
         ...
-        PerlHandler Local::TinyCMS
+        PerlHandler Local::TinyCP
         ...
     </Location>
 

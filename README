@@ -1,5 +1,6 @@
 NAME
-    Apache::TinyCP - put up content really quickly
+    Apache::TinyCP - a tiny content provider to put up content really
+    quickly
 
 SYNOPSIS
     In your Apache configuration:
@@ -80,8 +81,8 @@ EXTENDING
         <Perl>
             use Pod::Simple::HTML ();
         
-            package Local::TinyCMS;
-            use base qw( Apache::TinyCMS );
+            package Local::TinyCP;
+            use base qw( Apache::TinyCP );
         
             sub format_content {
                 my ( $self, $data, $r ) = @_;
@@ -97,7 +98,7 @@ EXTENDING
     
         <Location />
             ...
-            PerlHandler Local::TinyCMS
+            PerlHandler Local::TinyCP
             ...
         </Location>
 
