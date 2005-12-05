@@ -3,7 +3,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     'NAME'          => 'Apache::TinyCP',
     'ABSTRACT_FROM' => 'lib/Apache/TinyCP.pm',
-    'AUTHOR'        => 'Ian Langworth <langworth.com>',
+    'AUTHOR'        => 'Ian Langworth <ian@cpan.org>',
     'VERSION_FROM'  => 'lib/Apache/TinyCP.pm',
     dist => {
         'PREOP'     => 'pod2text lib/Apache/TinyCP.pm >README',

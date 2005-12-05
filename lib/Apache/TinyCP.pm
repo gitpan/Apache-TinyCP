@@ -1,7 +1,8 @@
 package Apache::TinyCP;
 use warnings;
 use strict;
-our $VERSION = "1.00";
+
+our $VERSION = "1.01";
 
 use Apache::Constants qw(:common :response);
 
@@ -32,7 +33,8 @@ In your Apache configuration:
         PerlSetVar  ModTimeFormat    %d.%b.%y
     </Location>
 
-In your C<ContentDir> directory, a file named F<HomePage>, along with other content files:
+In your C<ContentDir> directory, a file named F<HomePage>, along with other
+content files:
 
     Hello, world! *This* is the HomePage!
     
@@ -57,21 +59,40 @@ In your C<TemplateDir> directory, a file named F<layout>:
 
 =head1 DESCRIPTION
 
-This module is a very simple handler that takes files from F<ContentDir>, formats them somehow, and stamps on a header and footer using the template file F<template> in F<TemplateDir>. The default formatter is L<Text::KwikiFormatish> and the end result is somewhat of a pseudo-wiki web site. It was created because I enjoyed the ease and functionality of Kwiki text for creating content, but wanted something like a single-user wiki.
+This module is a very simple handler that takes files from F<ContentDir>,
+formats them somehow, and stamps on a header and footer using the template file
+F<template> in F<TemplateDir>. The default formatter is L<Text::KwikiFormatish>
+    and the end result is somewhat of a pseudo-wiki web site. It was created
+because I enjoyed the ease and functionality of Kwiki text for creating
+content, but wanted something like a single-user wiki.
 
-To set this up, create the three directories and set them as C<TemplateDir>, C<ContentDir> and C<CacheDir> in the Apache configuration, like in L<"SYNOPSIS">. 
+To set this up, create the three directories and set them as C<TemplateDir>,
+C<ContentDir> and C<CacheDir> in the Apache configuration, like in
+L<"SYNOPSIS">. 
 
-By default the content files located in F<ContentDir> are formatted with L<Text::KwikiFormatish> and cached with L<Cache::File>, which uses the path specified at F<CacheDir> to store cache files. The default templating system is L<Template::Toolkit>. The handler uses the F<layout> template wrapper in C<TemplateDir>. The tags C<[% content %]>, C<[% title %]> and C<[% modified %]> are replaced by the formatted content, the filename, and the formatted modification date (respectively).
+By default the content files located in F<ContentDir> are formatted with
+L<Text::KwikiFormatish> and cached with L<Cache::File>, which uses the path
+specified at F<CacheDir> to store cache files. The default templating system is
+L<Template::Toolkit>. The handler uses the F<layout> template wrapper in
+C<TemplateDir>. The tags C<[% content %]>, C<[% title %]> and C<[% modified %]>
+are replaced by the formatted content, the filename, and the formatted
+modification date (respectively).
 
-You could probably do this by writing a formatting handler and filtering that through L<Apache::Template>, though I'm not sure how the caching would work. You might also want to check out L<Apache::Sandwich>. If any of these ways works for you, more power to ya.
+You could probably do this by writing a formatting handler and filtering that
+through L<Apache::Template>, though I'm not sure how the caching would work.
+You might also want to check out L<Apache::Sandwich>. If any of these ways
+works for you, more power to ya.
 
-My goal was to have all my content files in one place (not F<htdocs>) as well as use wiki text for the rapid creation of content for my site.
+My goal was to have all my content files in one place (not F<htdocs>) as well
+as use wiki text for the rapid creation of content for my site.
 
 =head1 EXTENDING
 
 =head2 Changing the Formatter
 
-Say you wanted to write your pages in POD instead of Kwikish text. You would create a custom package, override the C<format_content()> method and use that as your PerlHandler. In your Apache configuration:
+Say you wanted to write your pages in POD instead of Kwikish text. You would
+create a custom package, override the C<format_content()> method and use that
+as your PerlHandler. In your Apache configuration:
 
     <Perl>
         use Pod::Simple::HTML ();
@@ -99,7 +120,9 @@ Say you wanted to write your pages in POD instead of Kwikish text. You would cre
 
 =head2 Futher Customization
 
-Here are all of the methods you can override. All methods are passed C<$self>, the name of the package, as the first argument and sometimes C<$r>, the L<Apache> request object.
+Here are all of the methods you can override. All methods are passed C<$self>,
+the name of the package, as the first argument and sometimes C<$r>, the
+L<Apache> request object.
 
 =over 4
 
@@ -119,17 +142,19 @@ sub get_filename {
 
     # simply use the ContentDir directive as the basedir
     my $uri = $r->uri;
-    for ( $uri ) {
-        s#^/+##;            # leading slash
-        s#[^[:print:]]##g;  # unprintables
-        s#\.\./##g;            # dots, for /../../..
+    for ($uri) {
+        s#^/+##;              # leading slash
+        s#[^[:print:]]##g;    # unprintables
+        s#\.\./##g;           # dots, for /../../..
     }
     return $r->dir_config('ContentDir') . "/$uri";
 }
 
 =item * get_content( $self, $filename, $r )
 
-Returns the formatted content to be inserted into the C<[% content %]> template variable. By default, this formats with L<Text::KwikiFormatish> and caches the formatted content using L<Cache::File>.
+Returns the formatted content to be inserted into the C<[% content %]> template
+variable. By default, this formats with L<Text::KwikiFormatish> and caches the
+formatted content using L<Cache::File>.
 
 =cut
 
@@ -160,7 +185,7 @@ sub get_content {
         # okay, no cached content.
         # start by getting the file's contents
         my $data;
-        if ( open( FH, '<'.$filename ) ) {
+        if ( open( FH, '<' . $filename ) ) {
             $data = join( '', <FH> );
             close FH;
         }
@@ -168,10 +193,11 @@ sub get_content {
             $r->log_reason( "Couldn't open file: $!", $filename );
             return;
         }
+
         #$r->log_error("*** Caching $cache_key");
 
         # format it
-        $content = $self->format_content($data, $r);
+        $content = $self->format_content( $data, $r );
 
         # save it to the cache as the uri plus the timestamp
         $CACHE->set( $cache_key, $content );
@@ -184,7 +210,8 @@ sub get_content {
 
 Return the formatted version of C<$data>, the contents of the content file.
 
-This method is only used by C<L<get_content>>. If you override C<L<get_content>>, you will not need to override this method.
+This method is only used by C<L<get_content>>. If you override
+C<L<get_content>>, you will not need to override this method.
 
 =cut
 
@@ -195,7 +222,11 @@ sub format_content {
 
 =item * print_content( $self, $content, $r )
 
-Print the given C<$content> to STDOUT. By default this method wraps the content in a template, and provides two extra variables: C<[% title %]>, the name of the document without a leading slash, and C<[% modtime %]>, the modification time of the document. The modification time format is configurable -- see L<"SYNOPSIS">.
+Print the given C<$content> to STDOUT. By default this method wraps the content
+in a template, and provides two extra variables: C<[% title %]>, the name of
+the document without a leading slash, and C<[% modtime %]>, the modification
+time of the document. The modification time format is configurable -- see
+L<"SYNOPSIS">.
 
 =cut
 
@@ -205,11 +236,10 @@ sub print_content {
     # setup title to be passed
     my $title = $r->uri;
     $title =~ s#^/##;
-    
+
     # create a template toolkit object, use TemplateDir as basedir
     my $tt = Template->new(
-        {
-            INCLUDE_PATH => $r->dir_config('TemplateDir'),
+        {   INCLUDE_PATH => $r->dir_config('TemplateDir'),
             RECURSION    => 1,
             WRAPPER      => 'layout',
         }
@@ -217,23 +247,25 @@ sub print_content {
 
     # no object? must be a Template::Toolkit error
     unless ($tt) {
-        $r->log_error( "Template::new() error: $Template::ERROR" );
+        $r->log_error("Template::new() error: $Template::ERROR");
         return;
     }
 
     # go ahead and print the content!
-    unless ( $tt->process( 
-      \$content, 
-      {
-        title    => $title,
-        modified => $r->pnotes('modified'),
-      }
-      ) ) {
+    unless (
+        $tt->process(
+            \$content,
+            {   title    => $title,
+                modified => $r->pnotes('modified'),
+            }
+        )
+        )
+    {
         $r->log_error( "Template content error: " . $tt->error );
         return;
     }
 
-    # everything was okay! 
+    # everything was okay!
     # "this is the EVERYTHING'S OKAY alarm!"
     return 1;
 }
@@ -242,17 +274,22 @@ sub print_content {
 
 Return the content type returned. Default is C<text/html>.
 
-This method is only used by C<L<print_content>>. If you override C<L<print_content>>, you will not need to override this method.
+This method is only used by C<L<print_content>>. If you override
+C<L<print_content>>, you will not need to override this method.
 
 =cut
 
-sub get_content_type { 'text/html' }
+sub get_content_type {'text/html'}
 
-#
-# erm, you could override this. i'll leave it outta the docs for now
-#
+=item * handler( $self, $r )
+
+mod_per1 handler method. You do not need to override this method unless you
+want to change the core logic.
+
+=cut
+
 sub handler ($$) {
-    my ($self, $r) = @_;
+    my ( $self, $r ) = @_;
 
     # lookup what file we're looking for, return declined
     # if we can't find the page, or forbidden if not -r
@@ -269,36 +306,37 @@ sub handler ($$) {
 
     # get the modification time, put in $r->pnotes('modified')
     if ( -e $filename ) {
-        $r->pnotes( modified => strftime( 
-            ($r->dir_config('ModTimeFormat') || '%F'),
-            localtime( (stat $filename)[9] )
-            ) );
+        $r->pnotes(
+            modified => strftime(
+                ( $r->dir_config('ModTimeFormat') || '%F' ),
+                localtime( ( stat $filename )[9] )
+            )
+        );
     }
 
     # get the formatted content
-    my $content = $self->get_content($filename, $r)
+    my $content = $self->get_content( $filename, $r )
         or return SERVER_ERROR;
 
     # print the formatted content
-    $r->send_http_header($self->get_content_type);
-    return $self->print_content($content, $r) ? OK : SERVER_ERROR;
+    $r->send_http_header( $self->get_content_type );
+    return $self->print_content( $content, $r ) ? OK: SERVER_ERROR;
 }
 
 =back
 
 =head1 AUTHOR
 
-Ian Langworth - langworth.com
+Ian Langworth, C<< <ian@cpan.org> >>
 
 =head1 SEE ALSO
 
 L<Cache::File>, L<Template>, L<Text::KwikiFormatish>
 
-I'm currently using this at L<http://langworth.com/>
-
 =head1 LICENSE
 
-This is free software. You may use it and redistribute it under the same terms as Perl itself.
+This is free software. You may use it and redistribute it under the same terms
+as Perl itself.
 
 =cut
 

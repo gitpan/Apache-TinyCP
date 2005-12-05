@@ -1,3 +1,8 @@
+version: 1.01
+date:    Sun Dec  4 20:22:20 EST 2005
+changes:
+  - updating Kwalitee
+----
 version: 1.00
 date:    Tue Aug 17 21:01:02 EDT 2004
 changes:

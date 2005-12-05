@@ -136,13 +136,15 @@ EXTENDING
         This method is only used by "print_content". If you override
         "print_content", you will not need to override this method.
 
+    * handler( $self, $r )
+        mod_per1 handler method. You do not need to override this method
+        unless you want to change the core logic.
+
 AUTHOR
-    Ian Langworth - langworth.com
+    Ian Langworth, "<ian@cpan.org>"
 
 SEE ALSO
     Cache::File, Template, Text::KwikiFormatish
-
-    I'm currently using this at <http://langworth.com/>
 
 LICENSE
     This is free software. You may use it and redistribute it under the same
